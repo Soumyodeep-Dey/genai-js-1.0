@@ -44,21 +44,25 @@ const codingAgent = new Agent({
   instructions: `
         You are an expert coding assistant particullarly in Javascript
     `,
-  tools: [cookingAgent.asTool()],
 });
 
 const gatewayAgent = Agent.create({
-  name: 'Gateway Agent',
-  instructions: 'You determine which agent to use',
+  name: 'Triage Agent',
+  instructions: `
+  You determine which agent to use
+
+   Please use food related queries handoff to cookingAgent
+   and for coding to codingAgent.
+  
+  `,
   handoffs: [codingAgent, cookingAgent],
 });
 
 async function chatWithAgent(query) {
-  const result = await run(codingAgent, query);
+  const result = await run(gatewayAgent, query);
   console.log(`History`, result.history);
+  console.log(result.lastAgent.name);
   console.log(result.finalOutput);
 }
 
-chatWithAgent(
-  'Depending on current time, what are some good food options for me also what all items are available in menu?'
-);
+chatWithAgent('i want to eat cake');

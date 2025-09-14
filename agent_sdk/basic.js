@@ -49,11 +49,9 @@ const codingAgent = new Agent({
 const gatewayAgent = Agent.create({
   name: 'Triage Agent',
   instructions: `
-  You determine which agent to use
-
-   Please use food related queries handoff to cookingAgent
-   and for coding to codingAgent.
-  
+    You have list of handoffs which you need to use to handoff the current user query to the correct agent.
+    You should hand off toCoding Agent if user asks about a coding question.
+    You should hand off to Cooking Agent if question is realted to Cooking.
   `,
   handoffs: [codingAgent, cookingAgent],
 });
@@ -61,8 +59,8 @@ const gatewayAgent = Agent.create({
 async function chatWithAgent(query) {
   const result = await run(gatewayAgent, query);
   console.log(`History`, result.history);
-  console.log(result.lastAgent.name);
+  console.log(`Hand Off Too`, result.lastAgent.name);
   console.log(result.finalOutput);
 }
 
-chatWithAgent('i want to eat cake');
+chatWithAgent('I want to cook a cake, what are all the menu items');
